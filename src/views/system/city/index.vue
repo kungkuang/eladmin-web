@@ -4,12 +4,12 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
         <!-- 搜索 -->
-        <label class="el-form-item-label">城市级别（1省；2市；3区；）</label>
-        <el-input v-model="query.level" clearable placeholder="城市级别（1省；2市；3区；）" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <label class="el-form-item-label">城市级别</label>
+        <el-input v-model="query.level" clearable placeholder="城市级别" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">城市名称</label>
         <el-input v-model="query.name" clearable placeholder="城市名称" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">城市编号（区号）</label>
-        <el-input v-model="query.citycode" clearable placeholder="城市编号（区号）" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <label class="el-form-item-label">城市编号</label>
+        <el-input v-model="query.citycode" clearable placeholder="城市编号" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">父级地理编号</label>
         <el-input v-model="query.pAdcode" clearable placeholder="父级地理编号" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">地理编号</label>
@@ -26,44 +26,33 @@
           <el-form-item label="父级编号">
             未设置字典，请手动设置 Select
           </el-form-item>
-          <el-form-item label="城市级别（1省；2市；3区；）" prop="level">
-            <el-radio v-for="item in dict.city_level" :key="item.id" v-model="form.level" :label="item.value">{{ item.label }}</el-radio>
+          <el-form-item label="城市级别" prop="level">
+            <el-select v-model="form.level" filterable placeholder="请选择">
+              <el-option
+                v-for="item in dict.city_level"
+                :key="item.id"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item label="城市名称" prop="name">
             <el-input v-model="form.name" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="城市编号（区号）" prop="citycode">
+          <el-form-item label="城市编号" prop="citycode">
             <el-input v-model="form.citycode" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="父级地理编号">
-            <el-input v-model="form.pAdcode" style="width: 370px;" />
-          </el-form-item>
-          <el-form-item label="地理编号">
-            <el-input v-model="form.adcode" style="width: 370px;" />
-          </el-form-item>
-          <el-form-item label="城市坐标中心点经度（* 1e6）：如果是中国，此值是 1e7" prop="lng">
+          <el-form-item label="中心点经度" prop="lng">
             <el-input v-model="form.lng" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="城市坐标中心点纬度（* 1e6）" prop="lat">
+          <el-form-item label="中心点纬度" prop="lat">
             <el-input v-model="form.lat" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="排序号" prop="sort">
             <el-input v-model="form.sort" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="添加人">
-            <el-input v-model="form.createUser" style="width: 370px;" />
-          </el-form-item>
-          <el-form-item label="创建时间">
-            <el-input v-model="form.createTime" style="width: 370px;" />
-          </el-form-item>
-          <el-form-item label="更新人">
-            <el-input v-model="form.updateUser" style="width: 370px;" />
-          </el-form-item>
-          <el-form-item label="更新时间">
-            <el-input v-model="form.updateTime" style="width: 370px;" />
-          </el-form-item>
           <el-form-item label="有效标识" prop="mark">
-            未设置字典，请手动设置 Radio
+            <el-radio v-for="item in dict.city_status" :key="item.id" v-model="form.mark" :label="item.value">{{ item.label }}</el-radio>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -74,23 +63,21 @@
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="level" label="城市级别（1省；2市；3区；）">
+        <el-table-column prop="level" label="城市级别">
           <template slot-scope="scope">
             {{ dict.label.city_level[scope.row.level] }}
           </template>
         </el-table-column>
         <el-table-column prop="name" label="城市名称" />
-        <el-table-column prop="citycode" label="城市编号（区号）" />
-        <el-table-column prop="pAdcode" label="父级地理编号" />
-        <el-table-column prop="adcode" label="地理编号" />
-        <el-table-column prop="lng" label="城市坐标中心点经度（* 1e6）：如果是中国，此值是 1e7" />
-        <el-table-column prop="lat" label="城市坐标中心点纬度（* 1e6）" />
+        <el-table-column prop="citycode" label="城市编号" />
+        <el-table-column prop="lng" label="中心点经度" />
+        <el-table-column prop="lat" label="中心点纬度" />
         <el-table-column prop="sort" label="排序号" />
-        <el-table-column prop="createUser" label="添加人" />
-        <el-table-column prop="createTime" label="创建时间" />
-        <el-table-column prop="updateUser" label="更新人" />
-        <el-table-column prop="updateTime" label="更新时间" />
-        <el-table-column prop="mark" label="有效标识" />
+        <el-table-column prop="mark" label="有效标识">
+          <template slot-scope="scope">
+            {{ dict.label.city_status[scope.row.mark] }}
+          </template>
+        </el-table-column>
         <el-table-column v-if="checkPer(['admin','sysCity:edit','sysCity:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
@@ -119,7 +106,7 @@ export default {
   name: 'SysCity',
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
-  dicts: ['city_level'],
+  dicts: ['city_level', 'city_status'],
   cruds() {
     return CRUD({ title: '城市管理', url: 'api/sysCity', idField: 'id', sort: 'id,desc', crudMethod: { ...crudSysCity }})
   },
@@ -132,19 +119,19 @@ export default {
       },
       rules: {
         level: [
-          { required: true, message: '城市级别（1省；2市；3区；）不能为空', trigger: 'blur' }
+          { required: true, message: '城市级别不能为空', trigger: 'blur' }
         ],
         name: [
           { required: true, message: '城市名称不能为空', trigger: 'blur' }
         ],
         citycode: [
-          { required: true, message: '城市编号（区号）不能为空', trigger: 'blur' }
+          { required: true, message: '城市编号不能为空', trigger: 'blur' }
         ],
         lng: [
-          { required: true, message: '城市坐标中心点经度（* 1e6）：如果是中国，此值是 1e7不能为空', trigger: 'blur' }
+          { required: true, message: '中心点经度不能为空', trigger: 'blur' }
         ],
         lat: [
-          { required: true, message: '城市坐标中心点纬度（* 1e6）不能为空', trigger: 'blur' }
+          { required: true, message: '中心点纬度不能为空', trigger: 'blur' }
         ],
         sort: [
           { required: true, message: '排序号不能为空', trigger: 'blur' }
@@ -154,9 +141,9 @@ export default {
         ]
       },
       queryTypeOptions: [
-        { key: 'level', display_name: '城市级别（1省；2市；3区；）' },
+        { key: 'level', display_name: '城市级别' },
         { key: 'name', display_name: '城市名称' },
-        { key: 'citycode', display_name: '城市编号（区号）' },
+        { key: 'citycode', display_name: '城市编号' },
         { key: 'pAdcode', display_name: '父级地理编号' },
         { key: 'adcode', display_name: '地理编号' },
         { key: 'mark', display_name: '有效标识' }
